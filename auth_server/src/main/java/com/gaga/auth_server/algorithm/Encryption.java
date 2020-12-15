@@ -18,4 +18,8 @@ public class Encryption {
 
         return BCrypt.hashpw(rawPassword, salt);
     }
+
+    public String encodeWithSalt(String rawPassword, String salt) {
+        return BCrypt.hashpw(rawPassword, salt);
+    }
 }

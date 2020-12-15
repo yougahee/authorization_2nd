@@ -1,7 +1,10 @@
 package com.gaga.auth_server.service;
 
 import com.gaga.auth_server.algorithm.Encryption;
+import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
+import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.DefaultResponseDTO;
+import com.gaga.auth_server.dto.response.LoginTokenResponseDTO;
 import com.gaga.auth_server.model.User;
 import com.gaga.auth_server.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +23,19 @@ public class UserService {
 
 
     //회원가입
-    public DefaultResponseDTO insertUser(User userInfo) {
+    public DefaultResponseDTO insertUser(UserInfoRequestDTO userInfo) {
         /* ##userInfo의 값이 제대로 들어왔는지 확인해야함.*/
 
-
-        User user = userInfo;
+        User user = new User();
 
         //password 암호화
         Encryption encryption = new Encryption();
         String encryptPW = encryption.encode(userInfo.getPassword());
 
         //pw, salt를 user에 저장장
+        user.setEmail(userInfo.getEmail());
+        user.setName(userInfo.getName());
+        user.setGender(userInfo.getGender());
         user.setPassword(encryptPW);
         user.setSalt(encryption.getSalt());
 
@@ -45,5 +50,33 @@ public class UserService {
         //success message를 return 하면 된다.
         return new DefaultResponseDTO(200, true, "회원가입 성공!_!");
     }
+
+    public LoginTokenResponseDTO getUserToken(UserLogInRequestDTO loginInfo) {
+
+        //LoginTokenResponseDTO loginTokenResponseDTO = new LoginTokenResponseDTO();
+
+        //password 암호화
+        Encryption encryption = new Encryption();
+
+        //DB에 있는 값과 일치하는지 확인하기.
+        log.info("email : " + loginInfo.getEmail());
+        User user = userInfoRepository.findByEmail(loginInfo.getEmail());
+        String encryptPW = encryption.encodeWithSalt(loginInfo.getPassword(), user.getSalt());
+        String dbPW = user.getPassword();
+        log.info("dbPW : " + dbPW );
+        log.info("encryptPW : " + encryptPW );
+
+        if(dbPW.equals(encryptPW)) {
+            return new LoginTokenResponseDTO(200, true, "로그인 성공!_!");
+        }
+        else {
+            return new LoginTokenResponseDTO(400, false, "회원정보와 일치하지 않습니다.");
+        }
+    }
+
+    /*public String encryptPW(String pw) {
+        Encryption encryption = new Encryption();
+        return encryption.encode(pw);
+    }*/
 
 }

@@ -29,5 +29,15 @@
 
 </br>
 
+
+# Error Log
+1. BCrypto를 사용하기 위해 dependecies에 implementation 'org.springframework.boot:spring-boot-starter-security' 을 추가했다.
+  - 이것을 추가하고 POSTMAN으로 테스트를 해보니 spring security가 생겨서 401 에러가 발생했고, web으로 url을 입력해보니, 로그인을 하라는 창이 나왔다.
+  - 원인 : 추가한 dependency는 spring security를 활성화시켜주었다.
+  - 해결방법 : implementation 'org.springframework.security:spring-security-crypto:5.1.5.RELEASE' 대체
+
+
+</br>
+
 # 구현요소
 

@@ -7,8 +7,8 @@
         <h3 class="join_title">
           <label for="email">아이디(e-mail)</label>
         </h3>
-        <span class="box int_id">
-          <input type="text" id="id" class="int" maxlength="20">
+        <span class="box int_email">
+          <input type="text" id="email" class="int" maxlength="100">
         </span>
         <span class="error_next_box"></span>
       </div>
@@ -33,96 +33,43 @@
       </div>
       <!-- NAME -->
       <div>
-        <h3 class="join_title"><label for="name">이름</label></h3>
+        <h3 class="join_title">
+          <label for="name">이름</label>
+        </h3>
         <span class="box int_name">
           <input type="text" id="name" class="int" maxlength="20">
-          </span>
-          <span class="error_next_box"></span>
-          </div>
-      <!-- BIRTH -->
+        </span>
+        <span class="error_next_box"></span>
+      </div>
+      <!-- GENDER -->
       <div>
-        <h3 class="join_title"><label for="yy">생년월일</label></h3>
-        <div id="bir_wrap">
-          <!-- BIRTH_YY -->
-          <div id="bir_yy">
-            <span class="box">
-              <input type="text" id="yy" class="int" maxlength="4" placeholder="년(4자)">
-              </span>
-              </div>
-              <!-- BIRTH_MM -->
-              <div id="bir_mm">
-                <span class="box">
-                  <select id="mm" class="sel">
-                    <option>월</option>
-                    <option value="01">1</option>
-                    <option value="02">2</option>
-                    <option value="03">3</option>
-                    <option value="04">4</option>
-                    <option value="05">5</option>
-                    <option value="06">6</option>
-                    <option value="07">7</option>
-                    <option value="08">8</option>
-                    <option value="09">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    </select>
-                    </span>
-                    </div>
-                    <!-- BIRTH_DD -->
-                    <div id="bir_dd">
-                      <span class="box">
-                        <input type="text" id="dd" class="int" maxlength="2" placeholder="일">
-                        </span>
-                        </div>
-                    </div>
-                    <span class="error_next_box"></span>    
-                </div>
-                <!-- GENDER -->
-                <div>
-                    <h3 class="join_title"><label for="gender">성별</label></h3>
-                    <span class="box gender_code">
-                        <select id="gender" class="sel">
-                            <option>성별</option>
-                            <option value="M">남자</option>
-                            <option value="F">여자</option>
-                        </select>                            
-                    </span>
-                    <span class="error_next_box">필수 정보입니다.</span>
-                </div>
-                <!-- EMAIL 나중에 지우기 -> 어짜피 id가 이메일이니까. -->
-                <div>
-                    <h3 class="join_title"><label for="email">본인확인 이메일<span class="optional">(선택)</span></label></h3>
-                    <span class="box int_email">
-                        <input type="text" id="email" class="int" maxlength="100" placeholder="선택입력">
-                    </span>
-                    <span class="error_next_box">이메일 주소를 다시 확인해주세요.</span>    
-                </div>
-                <!-- MOBILE -->
-                <div>
-                    <h3 class="join_title"><label for="phoneNo">휴대전화</label></h3>
-                    <span class="box int_mobile">
-                        <input type="tel" id="mobile" class="int" maxlength="16" placeholder="전화번호 입력">
-                    </span>
-                    <span class="error_next_box"></span>    
-                </div>
-                <!-- JOIN BTN-->
-                <div class="btn_area">
-                    <button type="button" id="btnJoin">
-                        <span>가입하기</span>
-                    </button>
-                </div>
-                <div> 
-                  <ul>
-                    <li>
-                      <router-link to='/'>
-                        로그인창으로 돌아가기
-                      </router-link>
-                    </li>
-                  </ul>
-                </div>
-            </div> 
-        </div> 
+        <h3 class="join_title"><label for="gender">성별</label></h3>
+        <span class="box gender_code">
+          <select id="gender" class="sel">
+            <option>성별</option>
+            <option value="M">남자</option>
+            <option value="F">여자</option>
+          </select>                            
+        </span>
+        <span class="error_next_box">필수 정보입니다.</span>     
+      </div>
+      <!-- JOIN BTN-->
+      <div class="btn_area">
+        <button type="button" id="btnJoin" @click="btnJoin">
+          <span>가입하기</span>
+        </button>
+      </div>
+      <div> 
+        <ul>
+          <li>
+            <router-link to='/'>
+              로그인창으로 돌아가기
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </div> 
+  </div> 
 </template>
 
 <script>
@@ -185,30 +132,70 @@ export default {
       status: 0,
       success: false,
       message: '',
-      shortestUrl: '',
       title: '회원가입'
     }
   },
   methods: {
-    submit: function () {
-      var input = document.getElementById('inputUrl').value
-      var result = document.getElementById('result')
-      
-      var id = document.querySelector('#id')
-      var pw1 = document.querySelector('#pswd1')
+    btnJoin: function () {
+      var id = document.getElementById('email').value
+      var pw1 = document.getElementById('pswd1').value
+      var userName = document.getElementById('name').value 
+      var gender = document.getElementById('gender').value
+
+      console.log(id)
+      console.log(pw1)
+      console.log(userName)
+      console.log(gender)
+
       var pwMsg = document.querySelector('#alertTxt')
       var pwImg1 = document.querySelector('#pswd1_img1')
       var pw2 = document.querySelector('#pswd2')
       var pwImg2 = document.querySelector('#pswd2_img1')
       var pwMsgArea = document.querySelector('.int_pass')
-      var userName = document.querySelector('#name') 
-      var yy = document.querySelector('#yy')
-      var mm = document.querySelector('#mm')
-      var dd = document.querySelector('#dd')
-      var gender = document.querySelector('#gender')
-      var email = document.querySelector('#email')
-      var mobile = document.querySelector('#mobile')
       var error = document.querySelectorAll('.error_next_box')
+
+      if (id === null || id === undefined || id === '') {
+        alert('Enter the id(email)!!!!!!!!!')
+      }
+      else if (pw1 === null || pw1 === undefined || pw1 === '') {
+        alert('Enter the password!!!!!!!!!')
+      }
+      else if (userName === null || userName === undefined || userName === '') {
+        alert('Enter the userName!!!!!!!!!')
+      }
+      else {
+        axios.post('http://localhost:8001/signup', {
+          email: id,
+          password: pw1,
+          name: userName,
+          gender: gender
+        }).then((res) => {
+          console.log(res.headers.status)
+          console.log(res.data)
+          this.status = res.data.status
+          this.success = res.data.success
+          this.message = res.data.message
+          this.shortestUrl = res.data.resultUrl
+          if (res.status === 200) {
+            if (res.data.success) {
+              alert(this.message)
+              location.href = "http://localhost:8080/";
+            } else {
+              alert('회원가입 실패!')
+            }
+          }
+          console.log(res.data.status)
+          console.log(res.data.success)
+          console.log(res.data.message)
+          console.log(res.data.resultUrl)
+        }, function () {
+          alert('400 Error : Bad Request')
+        })
+      }
+    },
+    submit: function () {
+      var input = document.getElementById('inputUrl').value
+      var result = document.getElementById('result')
       
       if (input === null || input === undefined || input === '') {
         alert('Enter the URL!!!!!!!!!')

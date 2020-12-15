@@ -32,11 +32,56 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Login Page'
+      msg: 'Login Page',
+      status: 0,
+      success: false,
+      message: '',
+      token: '',
+      refreshToken: ''
+    }
+  },
+  methods: {
+    submit: function () {
+      var id = document.getElementById('inputId').value
+      var pw = document.getElementById('inputPW').value
+      
+      if (id === null || id === undefined || id === '') {
+        alert('Enter the id!!!!!!!!!')
+      }
+      else if (pw === null || pw === undefined || pw === '') {
+        alert('Enter the pw!!!!!!!!!')
+      } else {
+        axios.post('http://localhost:8001/login', {
+          email: id,
+          password: pw
+        }).then((res) => {
+          console.log(res.headers.status)
+          this.status = res.data.status
+          this.success = res.data.success
+          this.message = res.data.message
+          this.token = res.data.token
+          this.refreshToken = res.data.refreshToken
+          if (res.status === 200) {
+            if (res.data.success) {
+              alert(this.message)
+              //location.href = "http://localhost:8080/main";
+            } else {
+              alert(this.message)
+            }
+          }
+          console.log(res.data.status)
+          console.log(res.data.success)
+          console.log(res.data.message)
+          console.log(res.data.resultUrl)
+        }, function () {
+          alert('400 Error : Bad Request')
+        })
+      }
     }
   }
 }

@@ -1,22 +1,25 @@
 package com.gaga.auth_server.controller;
 
+import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
+import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.DefaultResponseDTO;
+import com.gaga.auth_server.dto.response.LoginTokenResponseDTO;
 import com.gaga.auth_server.model.User;
 import com.gaga.auth_server.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
     private final UserService userService;
 
+    @CrossOrigin
     @GetMapping("")
     public String getTest() {
         return "Test";
@@ -28,15 +31,16 @@ public class UserController {
         return users;
     }
 
-/*    @PostMapping("/login")
-    public TokenResponseDTO login(@RequestBody LoginInfo loginInfo) {
-
-        return
-    }*/
-
-    @PostMapping("/signup")
-    public DefaultResponseDTO signUp(@RequestBody User userInfo) {
-        return userService.insertUser(userInfo);
+    @CrossOrigin
+    @PostMapping("/login")
+    public LoginTokenResponseDTO postLogin(@RequestBody UserLogInRequestDTO loginInfo) {
+        return userService.getUserToken(loginInfo);
     }
 
+    @CrossOrigin
+    @PostMapping("/signup")
+    public DefaultResponseDTO signUp(@RequestBody UserInfoRequestDTO userInfo) {
+        log.info("signup : ");
+        return userService.insertUser(userInfo);
+    }
 }
