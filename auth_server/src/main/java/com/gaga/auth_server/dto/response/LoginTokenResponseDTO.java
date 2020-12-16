@@ -19,4 +19,11 @@ public class LoginTokenResponseDTO {
         this.success = success;
         this.message = message;
     }
+
+    public LoginTokenResponseDTO(int status, boolean success, String message, String token) {
+        this.status = status;
+        this.success = success;
+        this.message = message;
+        this.token = token;
+    }
 }

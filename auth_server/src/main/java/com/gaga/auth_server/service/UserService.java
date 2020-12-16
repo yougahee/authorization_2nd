@@ -4,12 +4,17 @@ import com.gaga.auth_server.algorithm.Encryption;
 import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
 import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.DefaultResponseDTO;
+import com.gaga.auth_server.dto.response.GetAllUsersResponseDTO;
 import com.gaga.auth_server.dto.response.LoginTokenResponseDTO;
 import com.gaga.auth_server.model.User;
 import com.gaga.auth_server.repository.UserInfoRepository;
+import com.gaga.auth_server.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserInfoRepository userInfoRepository;
+    private final JwtUtils jwtUtils;
 
     //QQ 실패했을 때, or 성공했을 때 가지고 있는 틀을 만들어놓고 그것을 사용할 수 있었으면 좋겠다.
 
@@ -67,11 +73,23 @@ public class UserService {
         log.info("encryptPW : " + encryptPW );
 
         if(dbPW.equals(encryptPW)) {
-            return new LoginTokenResponseDTO(200, true, "로그인 성공!_!");
+            String token = jwtUtils.generateToken(user);
+            return new LoginTokenResponseDTO(200, true, "로그인 성공!_!", token);
         }
         else {
             return new LoginTokenResponseDTO(400, false, "회원정보와 일치하지 않습니다.");
         }
+    }
+
+    public List<GetAllUsersResponseDTO> getAllUsers() {
+        List<User> userList = userInfoRepository.findAll();
+        List<GetAllUsersResponseDTO> userSimple = new ArrayList<>();
+
+        for(User user : userList) {
+            userSimple.add(new GetAllUsersResponseDTO(user.getEmail(), user.getName()));
+        }
+
+        return userSimple;
     }
 
     /*public String encryptPW(String pw) {

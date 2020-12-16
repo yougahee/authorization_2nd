@@ -1,30 +1,17 @@
 <template>
-  <div class="login">
-    <img src="../assets/logo.png">
+  <div class="userList">
     <h1>{{ msg }}</h1>
     <ul>
-      <li>
-        <input type="text" id="inputId" placeholder="Enter the Email id" />
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <input type="text" id="inputPW" placeholder="Enter the password" />
+      <li v-for="item in items">
+        {{ item.email }} 
       </li>
     </ul>
     <button id="Login" @click="submit">Login</button>
     <p id="result" style="display:none">Hello</p>
     <ul>
       <li>
-        <router-link to='/SignUp'>
-          회원가입
-        </router-link>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <router-link to='/FindPW'>
-          비밀번호 찾기
+        <router-link to='/login'>
+          로그아웃
         </router-link>
       </li>
     </ul>
@@ -34,54 +21,34 @@
 <script>
 import axios from 'axios'
 export default {
-  name: 'HelloWorld',
+  name: '',
   data () {
     return {
-      msg: 'Login Page',
+      msg: 'User List',
       status: 0,
       success: false,
       message: '',
       token: '',
-      refreshToken: ''
+      refreshToken: '',
+      items: []
     }
   },
   methods: {
-    submit: function () {
-      var id = document.getElementById('inputId').value
-      var pw = document.getElementById('inputPW').value
-      
-      if (id === null || id === undefined || id === '') {
-        alert('Enter the id!!!!!!!!!')
-      }
-      else if (pw === null || pw === undefined || pw === '') {
-        alert('Enter the pw!!!!!!!!!')
-      } else {
-        axios.post('http://localhost:8001/login', {
-          email: id,
-          password: pw
-        }).then((res) => {
+    getAllUsers: function () {
+      axios.get('http://localhost:8001/users')
+      .then((res) => {
           console.log(res.headers.status)
-          this.status = res.data.status
-          this.success = res.data.success
-          this.message = res.data.message
-          this.token = res.data.token
-          this.refreshToken = res.data.refreshToken
+          this.items = res.data
           if (res.status === 200) {
             if (res.data.success) {
               alert(this.message)
-              location.href = "http://localhost:8080/main";
             } else {
               alert(this.message)
             }
           }
-          console.log(res.data.status)
-          console.log(res.data.success)
-          console.log(res.data.message)
-          console.log(res.data.resultUrl)
         }, function () {
           alert('400 Error : Bad Request')
         })
-      }
     }
   }
 }
