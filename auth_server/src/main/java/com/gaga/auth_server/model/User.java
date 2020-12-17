@@ -31,4 +31,7 @@ public class User {
 
     @Column(name = "gender")
     private String gender;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
 }

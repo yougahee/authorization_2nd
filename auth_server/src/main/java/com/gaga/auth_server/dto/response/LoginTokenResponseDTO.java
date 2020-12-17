@@ -20,10 +20,11 @@ public class LoginTokenResponseDTO {
         this.message = message;
     }
 
-    public LoginTokenResponseDTO(int status, boolean success, String message, String token) {
+    public LoginTokenResponseDTO(int status, boolean success, String message, String token, String refreshToken) {
         this.status = status;
         this.success = success;
         this.message = message;
         this.token = token;
+        this.refreshToken = refreshToken;
     }
 }

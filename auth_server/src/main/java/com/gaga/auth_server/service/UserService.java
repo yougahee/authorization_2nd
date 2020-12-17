@@ -31,7 +31,6 @@ public class UserService {
     //회원가입
     public DefaultResponseDTO insertUser(UserInfoRequestDTO userInfo) {
         /* ##userInfo의 값이 제대로 들어왔는지 확인해야함.*/
-
         User user = new User();
 
         //password 암호화
@@ -54,7 +53,7 @@ public class UserService {
         userInfoRepository.save(user);
 
         //success message를 return 하면 된다.
-        return new DefaultResponseDTO(200, true, "회원가입 성공!_!");
+        return new DefaultResponseDTO("회원가입 성공!_!");
     }
 
     public LoginTokenResponseDTO getUserToken(UserLogInRequestDTO loginInfo) {
@@ -65,7 +64,6 @@ public class UserService {
         Encryption encryption = new Encryption();
 
         //DB에 있는 값과 일치하는지 확인하기.
-        log.info("email : " + loginInfo.getEmail());
         User user = userInfoRepository.findByEmail(loginInfo.getEmail());
         String encryptPW = encryption.encodeWithSalt(loginInfo.getPassword(), user.getSalt());
         String dbPW = user.getPassword();
@@ -73,8 +71,13 @@ public class UserService {
         log.info("encryptPW : " + encryptPW );
 
         if(dbPW.equals(encryptPW)) {
-            String token = jwtUtils.generateToken(user);
-            return new LoginTokenResponseDTO(200, true, "로그인 성공!_!", token);
+            String accessToken = jwtUtils.generateToken(user).getAccessToken();
+            String refreshToken = jwtUtils.generateToken(user).getAccessToken();
+            user.setRefreshToken(refreshToken);
+            userInfoRepository.save(user);
+
+            //## 이렇게 쓰는 거 말고 좀 더 깔끔하게 쓸 수 있는 건 없는지 알아보기
+            return new LoginTokenResponseDTO(200, true, "로그인 성공!_!", accessToken, refreshToken);
         }
         else {
             return new LoginTokenResponseDTO(400, false, "회원정보와 일치하지 않습니다.");
