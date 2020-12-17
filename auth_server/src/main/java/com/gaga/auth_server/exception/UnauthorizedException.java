@@ -1,9 +1,9 @@
 package com.gaga.auth_server.exception;
 
-public class UnauthorizedException extends RuntimeException {
-    private static final long serialVersionUID = 1000L;
+import lombok.Getter;
 
-    public UnauthorizedException() {
-        super("유효하지 않은 토큰입니다.");
-    }
+@Getter
+public class UnauthorizedException extends RuntimeException {
+    static final long serialVersionUID = 1000L;
+    public final String errorMessage = "유효하지 않은 값입니다.";
 }

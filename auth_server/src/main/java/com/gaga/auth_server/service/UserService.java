@@ -4,13 +4,11 @@ import com.gaga.auth_server.algorithm.Encryption;
 import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
 import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.*;
-import com.gaga.auth_server.exception.UnauthorizedException;
 import com.gaga.auth_server.model.User;
 import com.gaga.auth_server.repository.UserInfoRepository;
 import com.gaga.auth_server.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -87,11 +85,7 @@ public class UserService {
     public TokenResponseDTO getReissueToken(String refreshToken) {
         TokenResponseDTO tokenResponseDTO = new TokenResponseDTO();
 
-        // 유효한 refreshToken인지?!
-        // 이렇게 할꺼면 굳이 boolean값으로 안하고 void로 해서 거기서 에러처리하는 게 나을 듯.
-        if(!jwtUtils.isValidateRefreshToken(refreshToken)) {
-            throw new UnauthorizedException();
-        }
+        jwtUtils.isValidateRefreshToken(refreshToken);
 
         //이것도 이렇게 user를 마음대로 가져와도 되는건가...
         //코드 중복 -> 쪼개야함
@@ -106,7 +100,6 @@ public class UserService {
         tokenResponseDTO.setRefreshToken(rt);
         return tokenResponseDTO;
     }
-
 
     public List<GetAllUsersResponseDTO> getAllUsers() {
         List<User> userList = userInfoRepository.findAll();

@@ -2,9 +2,7 @@ package com.gaga.auth_server;
 
 import com.gaga.auth_server.dto.response.DefaultResponseDTO;
 import com.gaga.auth_server.exception.UnauthorizedException;
-import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
-
 
 //import com.gaga.auth_server.dto.response.ResponseEntity;
 
@@ -19,19 +17,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AuthControllerAdvice {
     private DefaultResponseDTO defaultResponseDTO = new DefaultResponseDTO();
 
-   /* @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<DefaultResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
-        defaultResponseDTO.setMessage(e.getMessage());
+        //Valid 마다 다르게 message를 제공할 수 있는지 찾아보기.
+        defaultResponseDTO.setMessage("형식에 맞지 않습니다.");
 
-        //## 궁금 -> 이렇게 써서 하는 게 과연 맞는 것인가?
-        //에러처리를 어떻게 해야할지?!
-        return new ResponseEntity(defaultResponseDTO, HttpStatus.BAD_REQUEST);
-    }*/
+        return ResponseEntity.ok().body(defaultResponseDTO);
+    }
 
     @ExceptionHandler(value = {UnauthorizedException.class})
-    public ResponseEntity<String> UnauthorizedException(UnauthorizedException e) {
+    public ResponseEntity<DefaultResponseDTO> UnauthorizedException(UnauthorizedException e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.badRequest().body(e.getMessage());
+        defaultResponseDTO.setMessage(e.errorMessage);
+        return ResponseEntity.ok().body(defaultResponseDTO);
     }
 }

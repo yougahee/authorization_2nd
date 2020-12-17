@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -45,13 +46,10 @@ public class UserController {
     public ResponseEntity<DefaultResponseDTO> getAllUsers(
             @RequestHeader(value = "token") String token) {
 
-        //이러는 경우가 뭐가 있대?
-        if(!jwtUtils.isValidateToken(token)) {
-            return new ResponseEntity<>(null, headers, HttpStatus.BAD_REQUEST);
-        }
+        jwtUtils.isValidateToken(token);
 
         List<GetAllUsersResponseDTO> users = userService.getAllUsers();
-        //이걸 controller에서 하는 게 맞나? 그리고 성공했을떄, 실패했을때의
+        //이걸 controller에서 하는 게 맞나? 그리고 성공했을 때, 실패했을때의
         //그런 것들을 여기서 판단하는 게 아니지 않나?
         defaultResponseDTO.setStatus(StatusEnum.OK);
         defaultResponseDTO.setMessage("회원조회 성공");

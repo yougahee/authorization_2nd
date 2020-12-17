@@ -33,6 +33,9 @@
 ### 일반적으로 RefreshToken은 회원 DB에 저장한다고 한다. 왜일까?
 - refresh token으로 access token을 재발급 받을 때, refresh token이 서버가 발급한 정상적인 토큰인지 다시 한번 검증하기 위한 것
 
+### 내가 사용한 방법
+
+
 </br>
 
 ## 비밀번호 암호화

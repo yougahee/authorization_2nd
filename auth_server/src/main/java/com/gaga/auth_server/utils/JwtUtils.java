@@ -1,8 +1,10 @@
 package com.gaga.auth_server.utils;
 
+import com.gaga.auth_server.AuthControllerAdvice;
 import com.gaga.auth_server.dto.response.TokenResponseDTO;
 import com.gaga.auth_server.exception.UnauthorizedException;
 import com.gaga.auth_server.model.User;
+import com.mysql.cj.exceptions.UnableToConnectException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -42,12 +44,14 @@ public class JwtUtils {
     }
 
     //Access Token 유효한지 파악
-    public boolean isValidateToken(String token) {
+    public void isValidateToken(String token) {
         try{
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(ACCESS_SECRET_KEY)
                     .parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+
+            boolean isValid = !claims.getBody().getExpiration().before(new Date());
+            if(!isValid) throw new UnauthorizedException();
         } catch (Exception e) {
             log.error(e.toString());
             throw new UnauthorizedException();
@@ -62,12 +66,14 @@ public class JwtUtils {
         }
     }
 
-    public boolean isValidateRefreshToken(String token) {
+    public void isValidateRefreshToken(String token) {
         try{
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(REFRESH_SECRET_KEY)
                     .parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+
+            boolean isValid = !claims.getBody().getExpiration().before(new Date());
+            if(!isValid) throw new UnauthorizedException();
         } catch (Exception e) {
             log.error(e.toString());
             throw new UnauthorizedException();
