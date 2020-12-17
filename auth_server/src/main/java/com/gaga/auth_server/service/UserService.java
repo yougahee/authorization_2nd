@@ -3,14 +3,14 @@ package com.gaga.auth_server.service;
 import com.gaga.auth_server.algorithm.Encryption;
 import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
 import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
-import com.gaga.auth_server.dto.response.DefaultResponseDTO;
-import com.gaga.auth_server.dto.response.GetAllUsersResponseDTO;
-import com.gaga.auth_server.dto.response.LoginTokenResponseDTO;
+import com.gaga.auth_server.dto.response.*;
+import com.gaga.auth_server.exception.UnauthorizedException;
 import com.gaga.auth_server.model.User;
 import com.gaga.auth_server.repository.UserInfoRepository;
 import com.gaga.auth_server.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ public class UserService {
     private final JwtUtils jwtUtils;
 
     //QQ 실패했을 때, or 성공했을 때 가지고 있는 틀을 만들어놓고 그것을 사용할 수 있었으면 좋겠다.
-
 
 
     //회원가입
@@ -45,7 +44,7 @@ public class UserService {
         user.setSalt(encryption.getSalt());
 
         //## 만약에 이렇게 사용자의 실제 pwㄹ르 log 찍어버리면 암호화 하는 이유가 없는 느낌이군!
-        // 큰일이 생길 것 같은 느낌?
+        // 큰일이 생길 것 같은 느낌? -> 그럴 가능성이 있는 것인가?
         log.info("암호화한 PW의 값 : " + encryptPW);
         log.info("salt의 값 : " + encryption.getSalt());
 
@@ -56,6 +55,7 @@ public class UserService {
         return new DefaultResponseDTO("회원가입 성공!_!");
     }
 
+    //token
     public LoginTokenResponseDTO getUserToken(UserLogInRequestDTO loginInfo) {
 
         //LoginTokenResponseDTO loginTokenResponseDTO = new LoginTokenResponseDTO();
@@ -84,6 +84,30 @@ public class UserService {
         }
     }
 
+    public TokenResponseDTO getReissueToken(String refreshToken) {
+        TokenResponseDTO tokenResponseDTO = new TokenResponseDTO();
+
+        // 유효한 refreshToken인지?!
+        // 이렇게 할꺼면 굳이 boolean값으로 안하고 void로 해서 거기서 에러처리하는 게 나을 듯.
+        if(!jwtUtils.isValidateRefreshToken(refreshToken)) {
+            throw new UnauthorizedException();
+        }
+
+        //이것도 이렇게 user를 마음대로 가져와도 되는건가...
+        //코드 중복 -> 쪼개야함
+        User user = userInfoRepository.findByRefreshToken(refreshToken);
+
+        String at = jwtUtils.generateToken(user).getAccessToken();
+        String rt = jwtUtils.generateToken(user).getAccessToken();
+        user.setRefreshToken(refreshToken);
+        userInfoRepository.save(user);
+
+        tokenResponseDTO.setAccessToken(at);
+        tokenResponseDTO.setRefreshToken(rt);
+        return tokenResponseDTO;
+    }
+
+
     public List<GetAllUsersResponseDTO> getAllUsers() {
         List<User> userList = userInfoRepository.findAll();
         List<GetAllUsersResponseDTO> userSimple = new ArrayList<>();
@@ -95,9 +119,7 @@ public class UserService {
         return userSimple;
     }
 
-    /*public String encryptPW(String pw) {
-        Encryption encryption = new Encryption();
-        return encryption.encode(pw);
-    }*/
-
+    public boolean checkId(String userId) {
+        return !userInfoRepository.existsByEmail(userId);
+    }
 }

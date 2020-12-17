@@ -17,6 +17,10 @@ public class ResponseEntity<T> extends HttpEntity<T> {
         super(body, headers);
         Assert.notNull(status, "HTTPStatus must not be null");
         this.status = status;
+    }
 
+    public ResponseEntity(@Nullable T body, HttpStatus status) {
+        super(body);
+        this.status = status;
     }
 }

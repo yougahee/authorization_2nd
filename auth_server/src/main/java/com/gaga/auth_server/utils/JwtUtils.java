@@ -1,7 +1,7 @@
 package com.gaga.auth_server.utils;
 
-import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.TokenResponseDTO;
+import com.gaga.auth_server.exception.UnauthorizedException;
 import com.gaga.auth_server.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -16,7 +16,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 
 @Slf4j
@@ -50,12 +49,30 @@ public class JwtUtils {
                     .parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
-            //SignatureException -> token의 형태가 아님
             log.error(e.toString());
-            return false;
+            throw new UnauthorizedException();
+            /*
+            ##
+            여러가지 경우 exception이 나온다.
+            SignatureException ->
+            ExpriedJwtException ->
+            등등 ..
+            더 찾아보기 그리고 원래는 이런 에러? 들을 따로 나눠서 관리를 하는 것이 맞는 건가?
+            */
         }
     }
 
+    public boolean isValidateRefreshToken(String token) {
+        try{
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(REFRESH_SECRET_KEY)
+                    .parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            log.error(e.toString());
+            throw new UnauthorizedException();
+        }
+    }
 
     //token 발급
     public TokenResponseDTO generateToken(User user) {
