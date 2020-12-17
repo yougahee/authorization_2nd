@@ -12,6 +12,7 @@ public class DefaultResponseDTO {
     private String message;
     private Object data;
 
+
     public DefaultResponseDTO() {
         this.status = StatusEnum.BAD_REQUEST;
         this.data = null;

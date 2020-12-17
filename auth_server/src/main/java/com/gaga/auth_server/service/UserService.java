@@ -4,6 +4,7 @@ import com.gaga.auth_server.algorithm.Encryption;
 import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
 import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.*;
+import com.gaga.auth_server.exception.NoExistEmailException;
 import com.gaga.auth_server.model.User;
 import com.gaga.auth_server.repository.UserInfoRepository;
 import com.gaga.auth_server.utils.JwtUtils;
@@ -114,5 +115,19 @@ public class UserService {
 
     public boolean checkId(String userId) {
         return !userInfoRepository.existsByEmail(userId);
+    }
+
+    public DefaultResponseDTO findPassword(String email) {
+        if(!checkId(email)) {
+            throw new NoExistEmailException();
+        }
+
+
+        //이메일 발송하는 로직짜기
+
+
+
+        DefaultResponseDTO defaultResponseDTO = new DefaultResponseDTO("이메일을 발송했습니다.");
+        return defaultResponseDTO;
     }
 }

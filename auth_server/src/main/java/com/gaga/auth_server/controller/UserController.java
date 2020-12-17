@@ -1,5 +1,6 @@
 package com.gaga.auth_server.controller;
 
+import com.gaga.auth_server.dto.request.UserEmailIdRequestDTO;
 import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.*;
 import com.gaga.auth_server.service.UserService;
@@ -64,5 +65,12 @@ public class UserController {
     public ResponseEntity<TokenResponseDTO> reissueToken(@RequestHeader(value = "refresh_token") String refreshToken) {
         TokenResponseDTO tokenResponseDTO = userService.getReissueToken(refreshToken);
         return new ResponseEntity<>(tokenResponseDTO, headers, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @PostMapping("/find-pw")
+    public ResponseEntity<DefaultResponseDTO> findPassword(@Valid @RequestBody UserEmailIdRequestDTO userEmailDTO) {
+        DefaultResponseDTO defaultResponseDTO = userService.findPassword(userEmailDTO.getEmail());
+        return new ResponseEntity<>(defaultResponseDTO, headers, HttpStatus.OK);
     }
 }

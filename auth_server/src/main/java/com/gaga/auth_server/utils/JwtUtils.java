@@ -1,10 +1,8 @@
 package com.gaga.auth_server.utils;
 
-import com.gaga.auth_server.AuthControllerAdvice;
 import com.gaga.auth_server.dto.response.TokenResponseDTO;
 import com.gaga.auth_server.exception.UnauthorizedException;
 import com.gaga.auth_server.model.User;
-import com.mysql.cj.exceptions.UnableToConnectException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +16,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 
 @Slf4j
 @Component
@@ -56,7 +53,6 @@ public class JwtUtils {
             log.error(e.toString());
             throw new UnauthorizedException();
             /*
-            ##
             여러가지 경우 exception이 나온다.
             SignatureException ->
             ExpriedJwtException ->
