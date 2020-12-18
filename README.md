@@ -10,11 +10,58 @@
 - Spring Boot
 - JPA
 - JWT ( JSON Web Token)
+- Email인증
 
-## DB 구조
+</br>
+
+# DB 
+- user table
+
+| Column | type |  설명 | PK/FK |
+| :----: | :------: | :----------------------: | :----: |
+| user_idx | BIGINT | index값 ( 자동 생성 ) | PK |
+| email | VARCHAR | user ID(이메일형식) |  |
+| password | VARCHAR | user 비밀번호 |  |
+| salt | VARCHAR | user 비밀번호 Salt |  |
+| name | VARCHAR | user 이름 |  |
+| gender | VARCHAR | user 성별 |  |
+| refresh_token | VARCHAR | refresh_token |  |
+| create_time | Date | 생성날짜 |  |
 
 
 </br>
+
+
+# dependencies
+```
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+
+	//db
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'mysql:mysql-connector-java'
+
+
+	//lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//encryption
+	implementation 'org.springframework.security:spring-security-crypto:5.1.5.RELEASE'
+
+	//valid
+	implementation 'org.springframework.boot:spring-boot-starter-validation:2.3.3.RELEASE'
+
+	//jwt
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+
+
+	//email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+}
+```
 
 ## JWT(JSON Web Token)
 - header, payload, signature로 나누어진다.
@@ -34,6 +81,9 @@
 - refresh token으로 access token을 재발급 받을 때, refresh token이 서버가 발급한 정상적인 토큰인지 다시 한번 검증하기 위한 것
 
 ### 내가 사용한 방법
+
+
+### E-mail 인증
 
 
 </br>
@@ -70,3 +120,17 @@
 
 # 구현요소
 
+## signup
+<img src = "https://github.com/yougahee/url-shorter-repo/blob/master/img/EnterUrl.PNG">
+
+
+## login
+<img src = "https://github.com/yougahee/url-shorter-repo/blob/master/img/EnterUrl.PNG">
+
+
+## 아이디 중복 체크
+<img src = "https://github.com/yougahee/url-shorter-repo/blob/master/img/EnterUrl.PNG">
+
+
+## 임시비밀번호를 메일로 발송
+<img src = "https://github.com/yougahee/url-shorter-repo/blob/master/img/EnterUrl.PNG">

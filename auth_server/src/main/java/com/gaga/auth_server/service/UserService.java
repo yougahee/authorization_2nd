@@ -24,16 +24,12 @@ import java.util.Random;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
     private final UserInfoRepository userInfoRepository;
     private final JwtUtils jwtUtils;
     private final CustomMailSender customMailSender;
 
-    //QQ 실패했을 때, or 성공했을 때 가지고 있는 틀을 만들어놓고 그것을 사용할 수 있었으면 좋겠다.
-
     //회원가입
     public DefaultResponseDTO insertUser(UserInfoRequestDTO userInfo) {
-        /* ##userInfo의 값이 제대로 들어왔는지 확인해야함.*/
         User user = new User();
 
         //password 암호화
@@ -43,7 +39,7 @@ public class UserService {
         log.info("encryptPW" + encryptPW);
         log.info("getSalt" + encryption.getSalt());
 
-        //pw, salt를 user에 저장장
+        //pw, salt를 user에 저장
         user.setEmail(userInfo.getEmail());
         user.setName(userInfo.getName());
         user.setGender(userInfo.getGender());
@@ -58,14 +54,11 @@ public class UserService {
         //DB에 저장
         userInfoRepository.save(user);
 
-        //success message를 return 하면 된다.
         return new DefaultResponseDTO("회원가입 성공!_!");
     }
 
     //token
     public LoginTokenResponseDTO getUserToken(UserLogInRequestDTO loginInfo) throws NullPointerException {
-
-        //LoginTokenResponseDTO loginTokenResponseDTO = new LoginTokenResponseDTO();
 
         //password 암호화
         Encryption encryption = new Encryption();

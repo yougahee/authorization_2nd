@@ -15,7 +15,6 @@ public class DefaultResponseDTO {
 
     public DefaultResponseDTO() {
         this.status = StatusEnum.BAD_REQUEST;
-        this.data = null;
         this.success = false;
         this.message = null;
     }
@@ -24,5 +23,12 @@ public class DefaultResponseDTO {
         this.status = StatusEnum.OK;
         this.success = true;
         this.message = message;
+    }
+
+    public DefaultResponseDTO(String message, Object data) {
+        this.status = StatusEnum.OK;
+        this.success = true;
+        this.message = message;
+        this.data = data;
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class CustomMailSender {
     private final JavaMailSender javaMailSender;
 
-    public void sendMail(MailDTO mailDTO) {
+    public void sendMail(MailDTO mailDTO) throws MailSendException{
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setSubject("GAGA PLACE 임시비밀번호 전송");
