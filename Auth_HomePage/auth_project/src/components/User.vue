@@ -1,12 +1,27 @@
 <template>
   <div class="userList">
     <h1>{{ msg }}</h1>
-    <ul>
-      <li v-for="item in items">
-        {{ item.email }} 
+    <ul id = "userlist">
+      <li> 아이디(이메일)
+      </li>
+      <li> 회원 이름
       </li>
     </ul>
-    <button id="Login" @click="submit">Login</button>
+    <ul id = "example-1">
+      <div class = "">
+        <div v-for="item in items" >
+          <div class="grid">
+            <li>
+              {{item.email}}
+            </li>
+            <li id = "user-name">
+              {{item.name}}
+            </li>
+          </div>
+        </div>
+      </div>
+    </ul>
+    <button id="Login" @click="getAllUsers">회원정보가져오기</button>
     <p id="result" style="display:none">Hello</p>
     <ul>
       <li>
@@ -28,23 +43,28 @@ export default {
       status: 0,
       success: false,
       message: '',
-      token: '',
+      token: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzcyIsImdlbmRlciI6IuyXrCIsImV4cCI6MTYwODI3NjAzMSwiaWF0IjoxNjA4MjcyNDMxfQ.vpxD_UGbZNfE5Tmwrol9BcRIC8sMq_F4A_yKtjzu1L8',
       refreshToken: '',
       items: []
     }
   },
   methods: {
     getAllUsers: function () {
-      axios.get('http://localhost:8001/users')
+      let config = {
+        headers: {
+          'token' : this.token
+        }
+      }
+      axios.get('http://localhost:8001/users', config)
       .then((res) => {
-          console.log(res.headers.status)
-          this.items = res.data
-          if (res.status === 200) {
-            if (res.data.success) {
-              alert(this.message)
-            } else {
-              alert(this.message)
-            }
+          console.log(res.data)
+          console.log(res.data.data)
+          if (res.data.success) {
+            this.items = res.data.data
+            console.log("item " + this.items)
+            alert(res.data.message)
+          } else {
+            alert(res.data.message)
           }
         }, function () {
           alert('400 Error : Bad Request')
@@ -88,13 +108,14 @@ input {
 }
 button {
   background-color: #e08128;
-  width: 100px;
+  width: 200px;
   height: 35px;
   border: none;
   border-radius: 3px;
   display: block;
   align-content: center;
   text-align: center;
+  color:#FFFFFF;
   margin:auto;
   margin-top: 20px;
 }
@@ -103,5 +124,14 @@ p{
   display: block;
   margin-top: 20px;
   color: red;
+}
+.list-row-item{
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  padding: 4px;
+  transition: all 0.5s;
+}
+.user-name{
+  display: block;
 }
 </style>

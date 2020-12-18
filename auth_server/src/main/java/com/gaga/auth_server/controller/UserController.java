@@ -1,6 +1,7 @@
 package com.gaga.auth_server.controller;
 
 import com.gaga.auth_server.dto.request.UserEmailIdRequestDTO;
+import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
 import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.*;
 import com.gaga.auth_server.service.UserService;
@@ -71,6 +72,26 @@ public class UserController {
     @PostMapping("/find-pw")
     public ResponseEntity<DefaultResponseDTO> findPassword(@Valid @RequestBody UserEmailIdRequestDTO userEmailDTO) {
         DefaultResponseDTO defaultResponseDTO = userService.findPassword(userEmailDTO.getEmail());
+        return new ResponseEntity<>(defaultResponseDTO, headers, HttpStatus.OK);
+    }
+
+    //이것을 signup으로 옮기면 왜 안돼...? 정말 이해가 안간다!
+    @CrossOrigin
+    @PostMapping("/signup")
+    public DefaultResponseDTO signUp(@Valid @RequestBody UserInfoRequestDTO userInfo) {
+        return userService.insertUser(userInfo);
+    }
+
+    @CrossOrigin
+    @PostMapping("/signup/check-id")
+    public ResponseEntity<DefaultResponseDTO> checkId(@RequestBody UserEmailIdRequestDTO userInfo) {
+        if(userService.checkId(userInfo.getEmail())) {
+            defaultResponseDTO = new DefaultResponseDTO("사용가능한 아이디입니다.");
+        }else {
+            defaultResponseDTO = new DefaultResponseDTO("이미 사용하고 있는 아이디입니다.");
+            defaultResponseDTO.setSuccess(false);
+        }
+
         return new ResponseEntity<>(defaultResponseDTO, headers, HttpStatus.OK);
     }
 }

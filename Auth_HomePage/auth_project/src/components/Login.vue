@@ -28,6 +28,13 @@
         </router-link>
       </li>
     </ul>
+    <ul>
+      <li>
+        <router-link to='/user'>
+          회원관리
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -69,7 +76,7 @@ export default {
           if (res.status === 200) {
             if (res.data.success) {
               alert(this.message)
-              location.href = "http://localhost:8080/main";
+              this.$router.push('/user')
             } else {
               alert(this.message)
             }

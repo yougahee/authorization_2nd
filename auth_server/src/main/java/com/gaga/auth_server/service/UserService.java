@@ -1,6 +1,7 @@
 package com.gaga.auth_server.service;
 
 import com.gaga.auth_server.algorithm.Encryption;
+import com.gaga.auth_server.dto.MailDTO;
 import com.gaga.auth_server.dto.request.UserInfoRequestDTO;
 import com.gaga.auth_server.dto.request.UserLogInRequestDTO;
 import com.gaga.auth_server.dto.response.*;
@@ -12,8 +13,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class UserService {
 
     private final UserInfoRepository userInfoRepository;
     private final JwtUtils jwtUtils;
+    private final MailService mailService;
 
     //QQ 실패했을 때, or 성공했을 때 가지고 있는 틀을 만들어놓고 그것을 사용할 수 있었으면 좋겠다.
 
@@ -34,6 +38,9 @@ public class UserService {
         //password 암호화
         Encryption encryption = new Encryption();
         String encryptPW = encryption.encode(userInfo.getPassword());
+
+        log.info("encryptPW" + encryptPW);
+        log.info("getSalt" + encryption.getSalt());
 
         //pw, salt를 user에 저장장
         user.setEmail(userInfo.getEmail());
@@ -55,7 +62,7 @@ public class UserService {
     }
 
     //token
-    public LoginTokenResponseDTO getUserToken(UserLogInRequestDTO loginInfo) {
+    public LoginTokenResponseDTO getUserToken(UserLogInRequestDTO loginInfo) throws NullPointerException {
 
         //LoginTokenResponseDTO loginTokenResponseDTO = new LoginTokenResponseDTO();
 
@@ -118,16 +125,47 @@ public class UserService {
     }
 
     public DefaultResponseDTO findPassword(String email) {
-        if(!checkId(email)) {
+        if(checkId(email)) {
             throw new NoExistEmailException();
         }
 
+        User user = userInfoRepository.findByEmail(email);
+        log.info("user " + user.getEmail());
 
-        //이메일 발송하는 로직짜기
+        //임시 비밀번호 발급하기.
+        MailDTO mailDTO = new MailDTO(email);
+        Encryption encryption = new Encryption();
+        String tempPW = randomString();
+        mailDTO.setMessage(tempPW);
 
+        //DB에도 update
+        tempPW = encryption.encode(tempPW);
+        user.setPassword(tempPW);
+        user.setSalt(encryption.getSalt());
+        userInfoRepository.save(user);
 
+        mailService.mailSend(mailDTO);
+        return new DefaultResponseDTO("이메일을 발송했습니다.");
+    }
 
-        DefaultResponseDTO defaultResponseDTO = new DefaultResponseDTO("이메일을 발송했습니다.");
-        return defaultResponseDTO;
+    public String randomString() {
+        StringBuffer sb = new StringBuffer();
+        Random rnd = new Random();
+
+        for(int i=0; i<8; i++) {
+            switch (i) {
+                case 0:
+                    sb.append((char) ((rnd.nextInt(26)) + 97));
+                    break;
+                case 1:
+                    sb.append((char) ((rnd.nextInt(26)) + 65));
+                    break;
+                case 2:
+                    sb.append((rnd.nextInt(10)));
+                    break;
+            }
+        }
+
+        return sb.toString();
     }
 }

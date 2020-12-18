@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
@@ -21,9 +18,9 @@ import java.nio.charset.Charset;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController("/signup")
+@RestController
 public class SignUpController {
-    private final UserService userService;
+    UserService userService;
     DefaultResponseDTO defaultResponseDTO;
     HttpHeaders headers;
 
@@ -34,21 +31,10 @@ public class SignUpController {
     }
 
     @CrossOrigin
-    @PostMapping("")
-    public DefaultResponseDTO signUp(@Valid @RequestBody UserInfoRequestDTO userInfo) {
-        log.info("signup : ");
-        return userService.insertUser(userInfo);
+    @GetMapping("/")
+    public String test() {
+        return "test";
     }
 
-    @CrossOrigin
-    @PostMapping("/check_id")
-    public ResponseEntity<DefaultResponseDTO> checkId(@RequestBody UserEmailIdRequestDTO userInfo) {
-        if(userService.checkId(userInfo.getEmail())) {
-            defaultResponseDTO = new DefaultResponseDTO("사용가능한 아이디입니다.");
-        }else {
-            defaultResponseDTO = new DefaultResponseDTO("이미 사용하고 있는 아이디입니다.");
-        }
 
-        return new ResponseEntity<>(defaultResponseDTO, headers, HttpStatus.OK);
-    }
 }

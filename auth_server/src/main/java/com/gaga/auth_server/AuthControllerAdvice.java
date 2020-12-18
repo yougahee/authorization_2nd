@@ -35,4 +35,10 @@ public class AuthControllerAdvice {
         defaultResponseDTO.setMessage(e.errorMessage);
         return ResponseEntity.ok().body(defaultResponseDTO);
     }
+
+    @ExceptionHandler(value = {NullPointerException.class})
+    public ResponseEntity<DefaultResponseDTO> nullPointerException(NullPointerException e) {
+        defaultResponseDTO.setMessage("로그인 실패");
+        return ResponseEntity.ok().body(defaultResponseDTO);
+    }
 }
