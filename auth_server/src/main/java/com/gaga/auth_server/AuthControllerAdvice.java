@@ -1,6 +1,7 @@
 package com.gaga.auth_server;
 
 import com.gaga.auth_server.dto.response.DefaultResponseDTO;
+import com.gaga.auth_server.exception.MailSendException;
 import com.gaga.auth_server.exception.NoExistEmailException;
 import com.gaga.auth_server.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,12 @@ public class AuthControllerAdvice {
     @ExceptionHandler(value = {NullPointerException.class})
     public ResponseEntity<DefaultResponseDTO> nullPointerException(NullPointerException e) {
         defaultResponseDTO.setMessage("로그인 실패");
+        return ResponseEntity.ok().body(defaultResponseDTO);
+    }
+
+    @ExceptionHandler(value = {MailSendException.class})
+    public ResponseEntity<DefaultResponseDTO> nullPointerException(MailSendException e) {
+        defaultResponseDTO.setMessage(e.errorMessage);
         return ResponseEntity.ok().body(defaultResponseDTO);
     }
 }

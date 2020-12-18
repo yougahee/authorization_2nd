@@ -8,11 +8,13 @@ import com.gaga.auth_server.dto.response.*;
 import com.gaga.auth_server.exception.NoExistEmailException;
 import com.gaga.auth_server.model.User;
 import com.gaga.auth_server.repository.UserInfoRepository;
+import com.gaga.auth_server.utils.CustomMailSender;
 import com.gaga.auth_server.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +27,9 @@ public class UserService {
 
     private final UserInfoRepository userInfoRepository;
     private final JwtUtils jwtUtils;
-    private final MailService mailService;
+    private final CustomMailSender customMailSender;
 
     //QQ 실패했을 때, or 성공했을 때 가지고 있는 틀을 만들어놓고 그것을 사용할 수 있었으면 좋겠다.
-
 
     //회원가입
     public DefaultResponseDTO insertUser(UserInfoRequestDTO userInfo) {
@@ -132,9 +133,9 @@ public class UserService {
         User user = userInfoRepository.findByEmail(email);
         log.info("user " + user.getEmail());
 
-        //임시 비밀번호 발급하기.
         MailDTO mailDTO = new MailDTO(email);
         Encryption encryption = new Encryption();
+        //임시 비밀번호 발급하기.
         String tempPW = randomString();
         mailDTO.setMessage(tempPW);
 
@@ -144,16 +145,16 @@ public class UserService {
         user.setSalt(encryption.getSalt());
         userInfoRepository.save(user);
 
-        mailService.mailSend(mailDTO);
+        customMailSender.sendMail(mailDTO);
         return new DefaultResponseDTO("이메일을 발송했습니다.");
     }
 
     public String randomString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Random rnd = new Random();
 
         for(int i=0; i<8; i++) {
-            switch (i) {
+            switch (i%3) {
                 case 0:
                     sb.append((char) ((rnd.nextInt(26)) + 97));
                     break;

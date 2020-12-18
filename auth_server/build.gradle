@@ -45,9 +45,8 @@ dependencies {
 
 	//email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	compile "org.springframework:spring-context-support"
-
-
+	//compile "com.sun.mail:javax.mail"
+	//implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 test {
