@@ -43,7 +43,7 @@ export default {
       status: 0,
       success: false,
       message: '',
-      token: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzcyIsImdlbmRlciI6IuyXrCIsImV4cCI6MTYwODI3NjAzMSwiaWF0IjoxNjA4MjcyNDMxfQ.vpxD_UGbZNfE5Tmwrol9BcRIC8sMq_F4A_yKtjzu1L8',
+      token: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzcyIsImdlbmRlciI6IuyXrCIsImV4cCI6MTYwODQ4OTA2NSwiaWF0IjoxNjA4NDg1NDY1fQ._Z8ShXZ6OTplBS-n-pxz-8EaLOMj-JgzHD8X8yu6i6w',
       refreshToken: '',
       items: []
     }

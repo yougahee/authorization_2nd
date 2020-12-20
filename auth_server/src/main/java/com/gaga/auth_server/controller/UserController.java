@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -26,12 +25,13 @@ import java.util.List;
 public class UserController {
     private final JwtUtils jwtUtils;
     private final UserService userService;
-    private final HttpHeaders headers;
+    private HttpHeaders headers;
     private DefaultResponseDTO defaultResponseDTO;
 
     @PostConstruct
     protected void init() {
         defaultResponseDTO = new DefaultResponseDTO();
+        headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
     }
 
