@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -72,8 +71,9 @@ public class UserController {
     //이것을 signup으로 옮기면 왜 안돼...? 정말 이해가 안간다!
     @CrossOrigin
     @PostMapping("/signup")
-    public DefaultResponseDTO signUp(@Valid @RequestBody UserInfoRequestDTO userInfo) {
-        return userService.insertUser(userInfo);
+    public ResponseEntity<DefaultResponseDTO> signUp(@Valid @RequestBody UserInfoRequestDTO userInfo) {
+        defaultResponseDTO = userService.insertUser(userInfo);
+        return new ResponseEntity<>(defaultResponseDTO, headers, HttpStatus.OK);
     }
 
     @CrossOrigin

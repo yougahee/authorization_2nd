@@ -46,11 +46,6 @@ public class UserService {
         user.setPassword(encryptPW);
         user.setSalt(encryption.getSalt());
 
-        //## 만약에 이렇게 사용자의 실제 pwㄹ르 log 찍어버리면 암호화 하는 이유가 없는 느낌이군!
-        // 큰일이 생길 것 같은 느낌? -> 그럴 가능성이 있는 것인가?
-        log.info("암호화한 PW의 값 : " + encryptPW);
-        log.info("salt의 값 : " + encryption.getSalt());
-
         //DB에 저장
         userInfoRepository.save(user);
 
