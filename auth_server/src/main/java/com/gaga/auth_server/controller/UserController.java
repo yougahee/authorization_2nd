@@ -66,8 +66,7 @@ public class UserController {
         defaultResponseDTO = userService.findPassword(userEmailDTO.getEmail());
         return new ResponseEntity<>(defaultResponseDTO, headers, HttpStatus.OK);
     }
-
-    //이것을 signup으로 옮기면 왜 안돼...? 정말 이해가 안간다!
+    
     @CrossOrigin
     @PostMapping("/signup")
     public ResponseEntity<DefaultResponseDTO> signUp(@Valid @RequestBody UserInfoRequestDTO userInfo) {
