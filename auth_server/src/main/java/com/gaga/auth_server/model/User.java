@@ -3,7 +3,6 @@ package com.gaga.auth_server.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 
 @NoArgsConstructor

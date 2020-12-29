@@ -28,37 +28,30 @@ public class UserService {
     private final JwtUtils jwtUtils;
     private final CustomMailSender customMailSender;
 
-    //회원가입
     public DefaultResponseDTO insertUser(UserInfoRequestDTO userInfo) {
         User user = new User();
 
-        //password 암호화
         Encryption encryption = new Encryption();
         String encryptPW = encryption.encode(userInfo.getPassword());
 
         log.info("encryptPW" + encryptPW);
         log.info("getSalt" + encryption.getSalt());
 
-        //pw, salt를 user에 저장
         user.setEmail(userInfo.getEmail());
         user.setName(userInfo.getName());
         user.setGender(userInfo.getGender());
         user.setPassword(encryptPW);
         user.setSalt(encryption.getSalt());
 
-        //DB에 저장
         userInfoRepository.save(user);
 
         return new DefaultResponseDTO("회원가입 성공!_!");
     }
 
-    //token
     public LoginTokenResponseDTO getUserToken(UserLogInRequestDTO loginInfo) throws NullPointerException {
 
-        //password 암호화
         Encryption encryption = new Encryption();
 
-        //DB에 있는 값과 일치하는지 확인하기.
         User user = userInfoRepository.findByEmail(loginInfo.getEmail());
         String encryptPW = encryption.encodeWithSalt(loginInfo.getPassword(), user.getSalt());
         String dbPW = user.getPassword();
@@ -84,8 +77,8 @@ public class UserService {
 
         jwtUtils.isValidateRefreshToken(refreshToken);
 
-        //이것도 이렇게 user를 마음대로 가져와도 되는건가...
-        //코드 중복 -> 쪼개야함
+        //##이것도 이렇게 user를 마음대로 가져와도 되는건가...
+        //##코드 중복 -> 쪼개야함
         User user = userInfoRepository.findByRefreshToken(refreshToken);
 
         String at = jwtUtils.generateToken(user).getAccessToken();
@@ -123,11 +116,10 @@ public class UserService {
 
         MailDTO mailDTO = new MailDTO(email);
         Encryption encryption = new Encryption();
-        //임시 비밀번호 발급하기.
+
         String tempPW = randomString();
         mailDTO.setMessage(tempPW);
 
-        //DB에도 update
         tempPW = encryption.encode(tempPW);
         user.setPassword(tempPW);
         user.setSalt(encryption.getSalt());
@@ -142,7 +134,7 @@ public class UserService {
         Random rnd = new Random();
 
         for(int i=0; i<8; i++) {
-            switch (i%3) {
+            switch(i%3) {
                 case 0:
                     sb.append((char) ((rnd.nextInt(26)) + 97));
                     break;
