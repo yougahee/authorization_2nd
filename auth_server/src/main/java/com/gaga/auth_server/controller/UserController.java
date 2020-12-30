@@ -70,11 +70,6 @@ public class UserController {
         return new ResponseEntity<>(defaultResponseDTO, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/verify/email")
-    public ResponseEntity<> verifySendEmail() {
-    }
-
-
     @GetMapping("/refresh")
     public ResponseEntity<TokenResponseDTO> reissueToken(@RequestHeader(value = "refresh_token") String refreshToken) {
         TokenResponseDTO tokenResponseDTO = userService.getReissueToken(refreshToken);
